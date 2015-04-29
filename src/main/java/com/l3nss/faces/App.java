@@ -37,7 +37,7 @@ public class App {
     public static final String RECOGNIZER_FISHER = "FISHER";
     public static final String RECOGNIZER_LBPH = "LBPH";
     
-    public static final int BULK_LOAD_SIZE = 1000;
+    public static final int BULK_LOAD_SIZE = 100;
             
     FaceRecognizer model;
     
@@ -151,47 +151,51 @@ public class App {
                 MatVector images = new MatVector( BULK_LOAD_SIZE );
                 CvMat labels = CvMat.create( BULK_LOAD_SIZE, 1, CV_32SC1 );
                 
-                int counter = 0;
-
+                int label = 0;
+                int index = 0;
+                    
                 for ( File image : imageFiles ) {                      
 
-                    System.out.println("Processing " + image.getName() );
+                    System.out.println("Processing image: " + label + " " + image.getName() );
 
                     Mat grayImage = imread( image.getAbsolutePath(), CV_LOAD_IMAGE_GRAYSCALE );
 
                     Mat template = new Mat( templateSize );            
                     resize(grayImage, template, templateSize, 0d, 0d, INTER_CUBIC );
 
-                    System.out.println("   Image size width: " + grayImage.size().width() + 
-                                       " height: " + grayImage.size().height() + 
-                                       " scaled to " + template.size().width() + 
-                                       " " + template.size().height() );
+                    //System.out.println("Image size width: " + grayImage.size().width() + 
+                    //                   " height: " + grayImage.size().height() + 
+                   //                   " scaled to " + template.size().width() + 
+                    //                   " " + template.size().height() );
 
-                    imwrite( database + "/resized/" + image.getName(), template );
-                  
-                    long label = counter++;
+                    imwrite( database + "/resized/" + image.getName(), template );                                      
                     
-                    images.put( label, template );
-                    labels.put( label, label );
+                    images.put( index, template );
+                    labels.put( index, label );
+                    
+                    label++;
+                    index++;
                     
                         //Train facial recoginition system in batches.
-                    if ( counter % BULK_LOAD_SIZE == 0 && counter > 0 ){
+                    if ( label % BULK_LOAD_SIZE == 0 && index > 0 ){
                         
-                        System.out.println("Training at " + counter + " images...");
+                        System.out.println("Training at " + label + " images...");
                         
                         Mat l = new Mat(labels);
                         model.train(images, l);
                         
                         System.out.println("Done training. Continue loading...");
                         
-                        images.setNull();
+                        //images.setNull();
                         images = new MatVector( BULK_LOAD_SIZE );
                         
-                        labels.setNull();
+                        //labels.setNull();
                         labels = CvMat.create( BULK_LOAD_SIZE, 1, CV_32SC1 );
                         
+                        index = 0;
+                        
                     }
-                    
+  
                 }
       
                 Mat l = new Mat(labels);
