@@ -46,7 +46,7 @@ Save facial recognition model to disk
 
 Find image located at a specific path
 
-    find [image path]
+    search [image path]
 
 ### Usage Example
 

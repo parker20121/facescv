@@ -3,7 +3,7 @@ package com.l3nss.faces;
 import java.io.Console;
 import java.io.File;
 import java.util.Collection;
-import java.util.regex.Matcher;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import static org.bytedeco.javacpp.opencv_contrib.*;
@@ -12,63 +12,15 @@ import static org.bytedeco.javacpp.opencv_highgui.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 
 /**
+ * 
  * This application wraps the OpenCV libraries, providing a facial recognition
  * capability. The user can train the system through a command line interface
  * and submit images to integrate the knowledgebase for matches. If matches 
  * are recognized, the system will return the associated identifiers.
  * 
- * The following commands are supported:
- * 
- * <ul>
- *    <li>create [facial recognition model] [path to store model]</li>
- *    <li>train [training file]</li>
- *    <li>load [model location]</li>
- *    <li>save [model location]</li>
- *    <li>find [image path]</li>
- * </ul>
- * 
- * Running the application under Apache Maven
- * 
- * <code>
- *   mvn clean package exec:java -Dplatform.dependencies=true -Dexec.mainClass=com.l3nss.faces.App
- * 
- *   At the commoand line, create a new database with the Eigen facial recoginition class. Store
- *   the database at the path /opt/pervs/database
- * 
- *   Enter command: create EIGEN /opt/pervs/database
- *   
- *   > EigenFaceRecognizer loaded. 
- * 
- *   Traing the system with a collection of png and jpg files. The system will look for 
- *   image files starting at the parent directory /opt/familywatchdog
- * 
- *   Enter command: train /opt/sexoffenders
- *   
- *   > 
- * 
- * </code>
- * 
  * @author <a href="mailto:matthew.parker@l3-com.com">Matt Parker</a>
  * @see <a href="http://docs.opencv.org/trunk/doc/tutorials/introduction/java_eclipse/java_eclipse.html">Using OpenCV with Eclipse and Java</a>
- * @see <a href="https://github.com/bytedeco/javacv">JavaCV</a>
- *
- * <code>
- * 
- * Copyright 2015 Matt Parker
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * </code>
+ * @see <a href="https://github.com/bytedeco/javacv">JavaCV</a> 
  * 
  */
 public class App {
@@ -84,8 +36,6 @@ public class App {
     public static final String RECOGNIZER_EIGEN = "EIGEN";
     public static final String RECOGNIZER_FISHER = "FISHER";
     public static final String RECOGNIZER_LBPH = "LBPH";
-       
-    Pattern labelPattern = Pattern.compile("\\-(\\d+)");
     
     FaceRecognizer model;
     
@@ -94,6 +44,8 @@ public class App {
     Size templateSize = new Size(512, 512);
         
     String database = "";
+    
+    TreeMap<Integer,String> imageLabel = new TreeMap<Integer,String>();
     
     /**
      * 
@@ -165,6 +117,7 @@ public class App {
         }
     }
     
+    
     /**
      * 
      * @param model 
@@ -172,6 +125,7 @@ public class App {
     public void setModel( FaceRecognizer model ){
         this.model = model;
     }
+    
     
     /**
      * 
@@ -193,15 +147,11 @@ public class App {
                 System.out.println("Training system on " + fileCount + " files...");
                 
                 MatVector images = new MatVector( fileCount );
-                //Mat labels = new Mat(0, 1, CV_32SC1);
-                CvMat labels = CvMat.create( fileCount, 1, CV_32SC1);
-                
-                //int[] labels = new int[imageFiles.length];
-                //CvMat labels = cvCreateMat(1, imageFiles.length, CV_32SC1);
+                CvMat labels = CvMat.create( fileCount, 1, CV_32SC1 );
                 
                 int counter = 0;
 
-                for (File image : imageFiles) {                      
+                for ( File image : imageFiles ) {                      
 
                     System.out.println("Processing " + image.getName() );
 
@@ -217,19 +167,10 @@ public class App {
 
                     imwrite( database + "/resized/" + image.getName(), template );
                   
-                    Matcher m = labelPattern.matcher(image.getName());
-
-                    long label = -1;
-
-                    if ( !m.find() ){
-                        System.out.println("Image label format wasn't followed for image: " + image.getName() );
-                    } else {
-                        label = Long.parseLong( m.group(1) );
-                        System.out.println("   Label: " + label );
-                    }
-
-                    images.put( counter, template );
-                    labels.put( counter++, label);
+                    long label = counter++;
+                    
+                    images.put( label, template );
+                    labels.put( label, label );
                     
                 }
       
@@ -247,6 +188,7 @@ public class App {
         
     }   
         
+    
     /**
      * 
      * @param imagePath 
@@ -258,8 +200,7 @@ public class App {
         if ( file.exists() ){
             
             try {
-                
-           
+                           
                 Mat greyImage = imread( imagePath, CV_LOAD_IMAGE_GRAYSCALE );    
                 
                 int predictedLabel = -1;
@@ -276,7 +217,9 @@ public class App {
                     predictedLabel = model.predict( greyImage );
                 }
                            
-                System.out.println("Predicted label: " + predictedLabel);
+                String image = imageLabel.get(predictedLabel);
+                
+                System.out.println("Possible match: " + image);
                 
             } catch ( Exception e ){
                 System.out.println("Error: " + e.toString() );
@@ -288,6 +231,7 @@ public class App {
         }
         
     }
+    
     
     /**
      * 
@@ -320,6 +264,7 @@ public class App {
                 
     }
     
+    
     /**
      * 
      * @param modelPath 
@@ -336,6 +281,7 @@ public class App {
         
     }
     
+    
     /**
      * 
      */
@@ -348,5 +294,6 @@ public class App {
         }
         
     }
+    
     
 }
