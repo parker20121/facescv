@@ -37,6 +37,8 @@ public class App {
     public static final String RECOGNIZER_FISHER = "FISHER";
     public static final String RECOGNIZER_LBPH = "LBPH";
     
+    public static final int BULK_LOAD_SIZE = 1000;
+            
     FaceRecognizer model;
     
     String modelPath = null;
@@ -100,9 +102,9 @@ public class App {
                 if ( tokens.length == 1 ){
                     facialRecognition.save();
                 } else {
-                    facialRecognition.save(tokens[1]);
+                    facialRecognition.save( tokens[1] );
                 }
-                
+                 
             } else if ( input.startsWith( CMD_SEARCH ) ){
                 facialRecognition.search(tokens[1]);
                 
@@ -143,11 +145,11 @@ public class App {
                 
                 Collection<File> imageFiles = FileUtils.listFiles(directory, extensions, true);
                         
-                int fileCount = imageFiles.size();
-                System.out.println("Training system on " + fileCount + " files...");
+                //int fileCount = imageFiles.size();
+                //System.out.println("Training system on " + fileCount + " files...");
                 
-                MatVector images = new MatVector( fileCount );
-                CvMat labels = CvMat.create( fileCount, 1, CV_32SC1 );
+                MatVector images = new MatVector( BULK_LOAD_SIZE );
+                CvMat labels = CvMat.create( BULK_LOAD_SIZE, 1, CV_32SC1 );
                 
                 int counter = 0;
 
@@ -171,6 +173,24 @@ public class App {
                     
                     images.put( label, template );
                     labels.put( label, label );
+                    
+                        //Train facial recoginition system in batches.
+                    if ( counter % BULK_LOAD_SIZE == 0 && counter > 0 ){
+                        
+                        System.out.println("Training at " + counter + " images...");
+                        
+                        Mat l = new Mat(labels);
+                        model.train(images, l);
+                        
+                        System.out.println("Done training. Continue loading...");
+                        
+                        images.setNull();
+                        images = new MatVector( BULK_LOAD_SIZE );
+                        
+                        labels.setNull();
+                        labels = CvMat.create( BULK_LOAD_SIZE, 1, CV_32SC1 );
+                        
+                    }
                     
                 }
       
@@ -200,7 +220,7 @@ public class App {
         if ( file.exists() ){
             
             try {
-                           
+                            
                 Mat greyImage = imread( imagePath, CV_LOAD_IMAGE_GRAYSCALE );    
                 
                 int predictedLabel = -1;
