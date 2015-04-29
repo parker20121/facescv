@@ -24,9 +24,9 @@ Running the application from the command line
 
     java -Xms4g -Xmx6g -jar target/facescv-1.0-jar-with-dependencies.jar
 
-### Supported System Commands
+### Application Commands
 
-The following commands are supported.
+The following commands are supported when the application is running.
 
 Create facial recognition model, stored as specified path
 
