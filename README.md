@@ -1,10 +1,10 @@
 # facescv
-An Java application that wraps OpenCV libraries, creating a command line 
-interface to build a facial recognition system. 
 
-This application wraps the OpenCV libraries, providing a facial recognition
+### Overview
+
+This Java application wraps the OpenCV libraries, providing a facial recognition
 capability. The user can train the system through a command line interface
-and submit images to integrate the knowledgebase for matches. If matches 
+and submit images to query the knowledgebase for matches. If matches 
 are recognized, the system will return the associated identifiers.
 
 The following commands are supported:
@@ -27,13 +27,13 @@ Running the application from the command line
 
     java -Xms4g -Xmx6g -jar target/facescv-1.0-jar-with-dependencies.jar
 
-At the command line, create a new database with the Eigen facial recognition class. Store
-the database at the path /opt/test/database
-
 ### Usage Example
 
-After starting the application, the user is free to build a faciall recognition
-model
+After starting the application, the user is free to build a facial recognition
+model.
+
+At the command line, create a new database with the Eigen facial recognition class. Store
+the database at the path /opt/test/database
 
     Enter command: create EIGEN /opt/test/database
 
