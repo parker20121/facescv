@@ -7,13 +7,9 @@ capability. The user can train the system through a command line interface
 and submit images to query the knowledgebase for matches. If matches 
 are recognized, the system will return the associated identifiers.
 
-The following commands are supported:
+### Building the Application
 
-   * create [facial recognition model] [path to store model]
-   * train [training image directory]
-   * load [model location]
-   * save [model location]
-   * find [image path]
+Your system should have the latest OpenCV installed on the computer.
 
 Compiling the application with Apache Maven
 
@@ -26,6 +22,16 @@ Running the application with Apache Maven
 Running the application from the command line
 
     java -Xms4g -Xmx6g -jar target/facescv-1.0-jar-with-dependencies.jar
+
+### Supported System Commands
+
+The following commands are supported:
+
+   * create [facial recognition model] [path to store model]
+   * train [training image directory]
+   * load [model location]
+   * save [model location]
+   * find [image path]
 
 ### Usage Example
 
