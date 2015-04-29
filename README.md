@@ -36,19 +36,17 @@ The following commands are supported:
 ### Usage Example
 
 After starting the application, the user is free to build a facial recognition
-model.
+model. The system will provide the following user prompt:
+
+    Enter command:
 
 At the command line, create a new database with the Eigen facial recognition class. Store
 the database at the path /opt/test/database
 
     Enter command: create EIGEN /opt/test/database
 
-> EigenFaceRecognizer loaded. 
-
 Train the system with a collection of png and jpg files. The system will look for 
 image files starting at the parent directory /opt/images
 
     Enter command: train /opt/images
-
-> 
 
