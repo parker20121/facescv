@@ -9,7 +9,8 @@ are recognized, the system will return the associated identifiers.
 
 ### Building the Application
 
-Your system should have the latest OpenCV installed on the computer.
+Your system should have the latest [OpenCV](http://opencv.org) installed on 
+the computer.
 
 Compiling the application with Apache Maven
 
@@ -40,8 +41,14 @@ model. The system will provide the following user prompt:
 
     Enter command:
 
-At the command line, create a new database with the Eigen facial recognition class. Store
-the database at the path /opt/test/database
+At the command line, create a new facial recognition model and store it 
+at a specified location. User's can chose from the following models:
+
+   * EIGEN
+   * FISHER
+   * LBPH
+
+Store the database at the path /opt/test/database
 
     Enter command: create EIGEN /opt/test/database
 
