@@ -14,7 +14,7 @@ the computer.
 
 Compiling the application with Apache Maven
 
-    mvn clean package assemlby:single -Dplatform.dependencies=true
+    mvn package assembly:single -Dplatform.dependencies=true
 
 Running the application with Apache Maven
 
@@ -28,11 +28,15 @@ Running the application from the command line
 
 The following commands are supported:
 
-   * create [facial recognition model] [path to store model]
-   * train [training image directory]
-   * load [model location]
-   * save [model location]
-   * find [image path]
+    create [facial recognition model] [path to store model]
+
+    train [training image directory]
+
+    load [model location]
+
+    save [model location]
+
+    find [image path]
 
 ### Usage Example
 
