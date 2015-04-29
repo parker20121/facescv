@@ -26,22 +26,27 @@ Running the application from the command line
 
 ### Supported System Commands
 
-The following commands are supported:
+The following commands are supported.
+
+Create facial recognition model, stored as specified path
 
     create [facial recognition model] [path to store model]
 
+Train the model using a directory of images
 
     train [training image directory]
 
+Load facial recognition model from disk
 
     load [model location]
 
+Save facial recognition model to disk
 
     save [model location]
 
+Find image located at a specific path
 
     find [image path]
-
 
 ### Usage Example
 
