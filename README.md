@@ -51,12 +51,12 @@ Find image located at a specific path
 ### Usage Example
 
 After starting the application, the user is free to build a facial recognition
-model. The system will provide the following user prompt:
+model. The system provides the following user prompt:
 
     Enter command:
 
-At the command line, create a new facial recognition model and store it 
-at a specified location. User's can chose from the following models:
+At the command line, users can create a new facial recognition model and store 
+the results specified location. Users can chose from the following models:
 
    * EIGEN
    * FISHER
@@ -66,8 +66,8 @@ Store the database at the path /opt/test/database
 
     Enter command: create EIGEN /opt/test/database
 
-Train the system with a collection of png and jpg files. The system will look for 
-image files starting at the parent directory /opt/images
+Train the system with a collection of png and jpg files. The system will look 
+for image files starting at the parent directory /opt/images
 
     Enter command: train /opt/images
 
